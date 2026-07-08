@@ -1,0 +1,28 @@
+# secrets / env
+.env
+.env.local
+*.dbcreds
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# node / next
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-error.log*
+
+# build
+dist/
+build/
+
+# os / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
