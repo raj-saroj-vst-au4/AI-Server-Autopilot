@@ -75,3 +75,20 @@ CLAWDBOT_TIMEOUT = env_int("CLAWDBOT_TIMEOUT", 180)
 CHAT_MAX_TOOL_ROUNDS = env_int("CHAT_MAX_TOOL_ROUNDS", 8)
 # Allow the chat assistant to run arbitrary shell commands on managed servers.
 CHAT_ALLOW_COMMANDS = env_bool("CHAT_ALLOW_COMMANDS", True)
+
+# --- HexStrike AI (on-demand pentesting engine) ---
+# HexStrike (https://github.com/0x4m4/hexstrike-ai) is a separate Flask service
+# (default :8888) that wraps 150+ security tools. Autopilot talks to it over HTTP
+# and never runs the tools itself. Run it locally via `docker compose --profile
+# pentest up` or point at an existing instance.
+HEXSTRIKE_BASE_URL = env("HEXSTRIKE_BASE_URL", "http://host.docker.internal:8888").rstrip("/")
+HEXSTRIKE_API_KEY = env("HEXSTRIKE_API_KEY", "")  # optional bearer if fronted by a proxy
+HEXSTRIKE_TIMEOUT = env_int("HEXSTRIKE_TIMEOUT", 900)  # a scan can run for many minutes
+# Master gate: pentesting is OFF unless explicitly enabled.
+PENTEST_ENABLED = env_bool("PENTEST_ENABLED", False)
+# Allow intrusive/exploitation profiles (sqlmap injection, brute force, exploits).
+# These can disrupt live services, so they are OFF by default and additionally
+# require a per-scan confirmation.
+PENTEST_ALLOW_AGGRESSIVE = env_bool("PENTEST_ALLOW_AGGRESSIVE", False)
+# How many scans may run in the background at once.
+PENTEST_MAX_CONCURRENT = env_int("PENTEST_MAX_CONCURRENT", 2)

@@ -7,7 +7,7 @@ from sqlalchemy import inspect, select, text
 
 from . import config, models, monitor, security
 from .database import Base, SessionLocal, engine
-from .routers import auth, automations, chat, dashboard, events, servers
+from .routers import auth, automations, chat, dashboard, events, pentest, servers
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 log = logging.getLogger("autopilot")
@@ -73,6 +73,7 @@ app.include_router(servers.router)
 app.include_router(events.router)
 app.include_router(automations.router)
 app.include_router(chat.router)
+app.include_router(pentest.router)
 
 
 @app.get("/api/health")

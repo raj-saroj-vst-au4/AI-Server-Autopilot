@@ -169,6 +169,33 @@ class ActionRun(Base):
     action: Mapped["AutoAction"] = relationship(back_populates="runs")
 
 
+class PentestScan(Base):
+    """An on-demand security scan of a registered server, run via HexStrike AI."""
+
+    __tablename__ = "pentest_scans"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    server_id: Mapped[int | None] = mapped_column(
+        ForeignKey("servers.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+    server_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    target: Mapped[str] = mapped_column(String(255))  # always a registered server's IP
+    profile: Mapped[str] = mapped_column(String(32), index=True)  # recon | vuln | web | smart | ...
+    # queued | running | done | failed
+    status: Mapped[str] = mapped_column(String(16), default="queued", index=True)
+    triggered_by: Mapped[str | None] = mapped_column(String(64), nullable=True)  # username or 'chat'
+    authorized_by: Mapped[str | None] = mapped_column(String(64), nullable=True)  # audit trail
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    findings: Mapped[list | None] = mapped_column(JSON, nullable=True)  # [{severity,title,detail,tool}]
+    finding_counts: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # {critical, high, ...}
+    tools_run: Mapped[list | None] = mapped_column(JSON, nullable=True)  # [{tool,command,return_code,...}]
+    raw_output: Mapped[str | None] = mapped_column(Text, nullable=True)  # capped combined output
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, index=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class ChatSession(Base):
     __tablename__ = "chat_sessions"
 

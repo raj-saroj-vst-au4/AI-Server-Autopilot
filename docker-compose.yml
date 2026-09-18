@@ -11,6 +11,11 @@ services:
       DB_USER: ${DB_USER:-autopilot}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-autopilot}
+      # On-demand pentesting (HexStrike AI). Defaults to the bundled 'hexstrike'
+      # service; override in .env to point at an external engine.
+      HEXSTRIKE_BASE_URL: ${HEXSTRIKE_BASE_URL:-http://hexstrike:8888}
+      PENTEST_ENABLED: ${PENTEST_ENABLED:-false}
+      PENTEST_ALLOW_AGGRESSIVE: ${PENTEST_ALLOW_AGGRESSIVE:-false}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -29,3 +34,19 @@ services:
       - backend
     ports:
       - "${FRONTEND_PORT:-3010}:3000"
+
+  # Optional pentesting engine. Not started by default — bring it up with:
+  #   docker compose --profile pentest up -d --build
+  # Heavy Kali-based image (see hexstrike/Dockerfile). The backend reaches it at
+  # http://hexstrike:8888 on the compose network, so the host port is bound to
+  # localhost only — the engine's /api/command runs arbitrary commands and has no
+  # auth, so it must NOT be exposed on a public interface.
+  hexstrike:
+    build: ./hexstrike
+    container_name: autopilot-hexstrike
+    restart: unless-stopped
+    profiles: ["pentest"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:${HEXSTRIKE_PORT:-8888}:8888"

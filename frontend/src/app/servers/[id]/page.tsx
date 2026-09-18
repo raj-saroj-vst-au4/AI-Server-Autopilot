@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, StatusDot, Spinner } from "@/components/ui/misc";
 import { MetricChart } from "@/components/metric-chart";
 import { ServerChat } from "@/components/server-chat";
+import { PentestPanel } from "@/components/pentest-panel";
 import { api, Server, Metric, EventItem, Analysis } from "@/lib/api";
 import { timeAgo, fmtUptime } from "@/lib/utils";
 
@@ -243,6 +244,9 @@ function ServerDetail({ id }: { id: number }) {
           )}
         </CardContent>
       </Card>
+
+      {/* On-demand security scan */}
+      <PentestPanel serverId={id} />
 
       {/* Events */}
       <Card>

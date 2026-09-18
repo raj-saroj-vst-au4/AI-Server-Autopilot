@@ -6,7 +6,7 @@ import shlex
 
 from sqlalchemy import or_, select
 
-from . import config, models, ssh
+from . import config, models, pentest, ssh
 
 
 class ToolError(Exception):
@@ -165,6 +165,54 @@ def run_command(db, server: str = "", command: str = "", **_) -> str:
     return f"$ {command}  (exit {rc}) on {srv.name}:\n{body[:6000]}"
 
 
+def list_pentest_profiles(db, **_) -> str:
+    if not config.PENTEST_ENABLED:
+        return "Pentesting is disabled (set PENTEST_ENABLED=true to enable it)."
+    profs = pentest.available_profiles()
+    lines = [f"- {p['key']}: {p['label']} — {p['description']}" for p in profs]
+    return "Available pentest profiles:\n" + "\n".join(lines)
+
+
+def run_pentest(db, server: str = "", profile: str = "recon", confirm: bool = False, **_) -> str:
+    srv = _find_server(db, server)
+    try:
+        scan = pentest.start_scan(
+            db, server=srv, profile=profile, triggered_by="chat", confirm=confirm
+        )
+    except pentest.PentestError as e:
+        raise ToolError(str(e))
+    return (
+        f"Started {profile} scan #{scan.id} on {srv.name} ({srv.ip}). It runs in the "
+        f"background — ask for 'pentest results for {srv.name}' in a moment to see findings."
+    )
+
+
+def get_pentest_result(db, server: str = "", scan_id: int = 0, **_) -> str:
+    if scan_id:
+        scan = db.get(models.PentestScan, int(scan_id))
+        if not scan:
+            raise ToolError(f"No scan found with id {scan_id}")
+    else:
+        srv = _find_server(db, server)
+        scan = pentest.latest_for_server(db, srv.id)
+        if not scan:
+            raise ToolError(f"No scans have been run on {srv.name} yet.")
+    header = (
+        f"Scan #{scan.id} ({scan.profile}) on {scan.server_name or scan.target} — "
+        f"status: {scan.status}"
+    )
+    if scan.status in ("queued", "running"):
+        return header + ". Still running; check back shortly."
+    if scan.status == "failed":
+        return header + f".\nError: {scan.error}"
+    lines = [header, scan.summary or ""]
+    for f in (scan.findings or [])[:25]:
+        lines.append(f"  [{f['severity']}] {f['title']} — {f['detail']}")
+    if len(scan.findings or []) > 25:
+        lines.append(f"  ... and {len(scan.findings) - 25} more.")
+    return "\n".join(l for l in lines if l)
+
+
 def server_metrics(db, server: str = "", **_) -> str:
     srv = _find_server(db, server)
     latest = db.scalars(
@@ -258,6 +306,29 @@ TOOLS = [
             "server": {"type": "string"}, "command": {"type": "string"}},
             "required": ["server", "command"]},
     }},
+    {"type": "function", "function": {
+        "name": "list_pentest_profiles",
+        "description": "List the available on-demand security scan (pentest) profiles.",
+        "parameters": {"type": "object", "properties": {}},
+    }},
+    {"type": "function", "function": {
+        "name": "run_pentest",
+        "description": "Start an on-demand security scan (pentest) of a registered server using "
+                       "HexStrike AI. Runs in the background. Profiles: recon, vuln, web, smart "
+                       "(and exploit if aggressive scans are enabled).",
+        "parameters": {"type": "object", "properties": {
+            "server": {"type": "string", "description": "server name or IP (must be registered)"},
+            "profile": {"type": "string", "description": "recon | vuln | web | smart | exploit"},
+            "confirm": {"type": "boolean", "description": "required for intrusive profiles"}},
+            "required": ["server"]},
+    }},
+    {"type": "function", "function": {
+        "name": "get_pentest_result",
+        "description": "Get the latest pentest scan result for a server, or a specific scan by id.",
+        "parameters": {"type": "object", "properties": {
+            "server": {"type": "string", "description": "server name or IP"},
+            "scan_id": {"type": "integer", "description": "specific scan id (optional)"}}},
+    }},
 ]
 
 DISPATCH = {
@@ -273,6 +344,9 @@ DISPATCH = {
     "reboot_server": reboot_server,
     "shutdown_all_servers": shutdown_all_servers,
     "run_command": run_command,
+    "list_pentest_profiles": list_pentest_profiles,
+    "run_pentest": run_pentest,
+    "get_pentest_result": get_pentest_result,
 }
 
 

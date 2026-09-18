@@ -216,3 +216,31 @@ class QuickChatRequest(BaseModel):
 class QuickChatResponse(BaseModel):
     reply: str
     actions: list[str] = []  # human-readable summary of tools invoked
+
+
+class PentestStartRequest(BaseModel):
+    profile: str = "recon"
+    confirm: bool = False  # required for intrusive/aggressive profiles
+
+
+class PentestScanOut(BaseModel):
+    id: int
+    server_id: int | None
+    server_name: str | None
+    target: str
+    profile: str
+    status: str
+    triggered_by: str | None
+    authorized_by: str | None
+    summary: str | None
+    findings: list | None = None
+    finding_counts: dict | None = None
+    tools_run: list | None = None
+    raw_output: str | None = None
+    error: str | None
+    created_at: datetime
+    started_at: datetime | None
+    finished_at: datetime | None
+
+    class Config:
+        from_attributes = True

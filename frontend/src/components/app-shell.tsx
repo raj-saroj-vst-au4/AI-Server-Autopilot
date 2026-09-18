@@ -11,6 +11,7 @@ import {
   Menu,
   LogOut,
   ShieldCheck,
+  ShieldAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { clearToken, getToken } from "@/lib/api";
@@ -22,6 +23,7 @@ const nav = [
   { href: "/servers", label: "Servers", icon: Server },
   { href: "/events", label: "Events", icon: AlertTriangle },
   { href: "/automations", label: "Automations", icon: Zap },
+  { href: "/security", label: "Security", icon: ShieldAlert },
   { href: "/chat", label: "Clawdbot", icon: Bot },
 ];
 

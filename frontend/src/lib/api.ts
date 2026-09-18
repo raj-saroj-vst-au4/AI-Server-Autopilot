@@ -145,6 +145,62 @@ export interface ActionRun {
   output: string | null;
 }
 
+export interface PentestProfile {
+  key: string;
+  label: string;
+  description: string;
+  aggressive: boolean;
+}
+
+export interface PentestHealth {
+  enabled: boolean;
+  reachable?: boolean;
+  base_url?: string;
+  version?: string;
+  total_tools_available?: number;
+  total_tools_count?: number;
+  allow_aggressive?: boolean;
+  error?: string;
+}
+
+export interface PentestFinding {
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  title: string;
+  detail: string;
+  tool?: string;
+}
+
+export interface PentestToolRun {
+  tool: string;
+  command?: string | null;
+  success?: boolean | null;
+  return_code?: number | null;
+  execution_time?: number | null;
+  output?: string | null;
+}
+
+export type PentestStatus = "queued" | "running" | "done" | "failed";
+
+export interface PentestScan {
+  id: number;
+  server_id: number | null;
+  server_name: string | null;
+  target: string;
+  profile: string;
+  status: PentestStatus;
+  triggered_by: string | null;
+  authorized_by: string | null;
+  summary: string | null;
+  findings: PentestFinding[] | null;
+  finding_counts: Record<string, number> | null;
+  tools_run: PentestToolRun[] | null;
+  raw_output: string | null;
+  error: string | null;
+  created_at: string;
+  started_at: string | null;
+  finished_at: string | null;
+}
+
 export interface ChatSession {
   id: number;
   title: string;
