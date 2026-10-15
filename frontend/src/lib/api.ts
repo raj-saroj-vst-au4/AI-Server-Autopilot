@@ -157,6 +157,8 @@ export interface PentestProfile {
 
 export interface PentestHealth {
   enabled: boolean;
+  provider?: string;
+  label?: string;
   reachable?: boolean;
   base_url?: string;
   version?: string;
