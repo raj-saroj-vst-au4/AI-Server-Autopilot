@@ -108,6 +108,11 @@ PENTAGI_API_TOKEN = env("PENTAGI_API_TOKEN", "")
 PENTAGI_MODEL_PROVIDER = env("PENTAGI_MODEL_PROVIDER", "custom")
 PENTAGI_TIMEOUT = env_int("PENTAGI_TIMEOUT", 60)  # per API call (not the flow run)
 PENTAGI_VERIFY_SSL = env_bool("PENTAGI_VERIFY_SSL", False)  # PentAGI serves self-signed TLS
+PENTAGI_API_TOKEN = env("PENTAGI_API_TOKEN", "")  # Bearer token for its GraphQL API
+PENTAGI_PUBLIC_URL = env("PENTAGI_PUBLIC_URL", "https://10.127.1.70:8443").rstrip("/")
+# How long a background poller follows a PentAGI flow before finalizing the scan
+# (the flow keeps running in PentAGI; the scan links out to it).
+PENTAGI_FLOW_TIMEOUT = env_int("PENTAGI_FLOW_TIMEOUT", 1800)
 
 # --- LLM server lifecycle (the model runs as a container on another fleet host) ---
 # Admins see live status and can start/stop it from the UI. We reach the host over

@@ -30,3 +30,7 @@ build/
 *.swp
 .vscode/
 .idea/
+
+# Claude settings (local + the permission-system temp files)
+.claude/settings.local.json*
+*.tmp.*

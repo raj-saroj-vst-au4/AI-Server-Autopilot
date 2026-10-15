@@ -181,6 +181,9 @@ class PentestScan(Base):
     server_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     target: Mapped[str] = mapped_column(String(255))  # always a registered server's IP
     profile: Mapped[str] = mapped_column(String(32), index=True)  # recon | vuln | web | smart | ...
+    provider: Mapped[str] = mapped_column(String(16), default="hexstrike")  # hexstrike | pentagi
+    external_id: Mapped[str | None] = mapped_column(String(64), nullable=True)  # e.g. PentAGI flow id
+    external_url: Mapped[str | None] = mapped_column(String(255), nullable=True)  # link to engine UI
     # queued | running | done | failed
     status: Mapped[str] = mapped_column(String(16), default="queued", index=True)
     triggered_by: Mapped[str | None] = mapped_column(String(64), nullable=True)  # username or 'chat'

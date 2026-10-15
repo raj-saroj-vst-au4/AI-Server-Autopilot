@@ -29,6 +29,21 @@ def run_migrations():
             ))
         log.info("migration: added servers.is_high_priority")
 
+    # pentest_scans: provider + external engine references (PentAGI flow id/url)
+    if "pentest_scans" in inspector.get_table_names():
+        pcols = {c["name"] for c in inspector.get_columns("pentest_scans")}
+        adds = []
+        if "provider" not in pcols:
+            adds.append("ADD COLUMN provider VARCHAR(16) NOT NULL DEFAULT 'hexstrike'")
+        if "external_id" not in pcols:
+            adds.append("ADD COLUMN external_id VARCHAR(64) NULL")
+        if "external_url" not in pcols:
+            adds.append("ADD COLUMN external_url VARCHAR(255) NULL")
+        if adds:
+            with engine.begin() as conn:
+                conn.execute(text("ALTER TABLE pentest_scans " + ", ".join(adds)))
+            log.info("migration: added pentest_scans %s", [a.split()[2] for a in adds])
+
 
 def seed_admin():
     db = SessionLocal()

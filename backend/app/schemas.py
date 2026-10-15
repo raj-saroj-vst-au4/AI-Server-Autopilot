@@ -240,6 +240,9 @@ class PentestScanOut(BaseModel):
     server_name: str | None
     target: str
     profile: str
+    provider: str = "hexstrike"
+    external_id: str | None = None
+    external_url: str | None = None
     status: str
     triggered_by: str | None
     authorized_by: str | None

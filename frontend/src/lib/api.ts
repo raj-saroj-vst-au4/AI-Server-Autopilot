@@ -190,6 +190,9 @@ export interface PentestScan {
   server_name: string | null;
   target: string;
   profile: string;
+  provider?: string;
+  external_id?: string | null;
+  external_url?: string | null;
   status: PentestStatus;
   triggered_by: string | null;
   authorized_by: string | null;
