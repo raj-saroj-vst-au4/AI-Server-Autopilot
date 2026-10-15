@@ -1,0 +1,15 @@
+# HexStrike engine — started on demand by the app (docker compose up/down via the
+# host socket). Uses a pre-built image (autopilot-hexstrike:latest) so starts are
+# fast, and joins the shared autopilot-net so the app reaches it at hexstrike:8888.
+networks:
+  autopilot-net:
+    external: true
+
+services:
+  hexstrike:
+    image: autopilot-hexstrike:latest
+    container_name: hexstrike
+    hostname: hexstrike
+    restart: unless-stopped
+    networks:
+      - autopilot-net

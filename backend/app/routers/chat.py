@@ -9,6 +9,14 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 Auth = Depends(security.current_user)
 
 
+@router.get("/models", response_model=list[schemas.ChatModelOut])
+def list_models(_=Auth):
+    try:
+        return clawdbot.list_models()
+    except clawdbot.ClawdbotError as e:
+        raise HTTPException(502, f"Clawdbot error: {e}")
+
+
 @router.get("/sessions", response_model=list[schemas.ChatSessionOut])
 def list_sessions(db: Session = Depends(get_db), _=Auth):
     return db.scalars(
@@ -74,7 +82,7 @@ def send(session_id: int, body: schemas.ChatSendRequest, db: Session = Depends(g
 
     history = _history_for_model(session)
     try:
-        produced = clawdbot.run_turn(db, history)
+        produced = clawdbot.run_turn(db, history, model=body.model)
     except clawdbot.ClawdbotError as e:
         raise HTTPException(502, f"Clawdbot error: {e}")
 

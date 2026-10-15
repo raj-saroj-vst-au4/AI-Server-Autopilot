@@ -196,6 +196,17 @@ class PentestScan(Base):
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
+class Setting(Base):
+    """Small key/value store for runtime-mutable settings (e.g. the active
+    pentest engine), so admins can change them from the UI without editing .env."""
+
+    __tablename__ = "settings"
+
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    value: Mapped[str] = mapped_column(String(255))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+
+
 class ChatSession(Base):
     __tablename__ = "chat_sessions"
 

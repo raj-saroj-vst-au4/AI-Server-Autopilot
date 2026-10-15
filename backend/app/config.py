@@ -92,3 +92,27 @@ PENTEST_ENABLED = env_bool("PENTEST_ENABLED", False)
 PENTEST_ALLOW_AGGRESSIVE = env_bool("PENTEST_ALLOW_AGGRESSIVE", False)
 # How many scans may run in the background at once.
 PENTEST_MAX_CONCURRENT = env_int("PENTEST_MAX_CONCURRENT", 2)
+
+# Which pentest engine is active fleet-wide: "hexstrike" or "pentagi".
+# A single global switch (not per-scan) chooses the engine the UI and chat use.
+# Defaults to pentagi (the primary engine); overridable at runtime from the UI.
+PENTEST_PROVIDER = env("PENTEST_PROVIDER", "pentagi").lower()
+
+# PentAGI (https://github.com/vxcontrol/pentagi) — an autonomous multi-agent
+# pentest engine. Autopilot talks to its REST/GraphQL API (default :8443) with a
+# bearer API token; "flows" run asynchronously, so we create one and poll it.
+PENTAGI_BASE_URL = env("PENTAGI_BASE_URL", "https://pentagi:8443").rstrip("/")
+PENTAGI_API_TOKEN = env("PENTAGI_API_TOKEN", "")
+# modelProvider passed to createFlow (openai|anthropic|custom|…). With PentAGI
+# wired to a custom OpenAI-compatible endpoint, this is "custom".
+PENTAGI_MODEL_PROVIDER = env("PENTAGI_MODEL_PROVIDER", "custom")
+PENTAGI_TIMEOUT = env_int("PENTAGI_TIMEOUT", 60)  # per API call (not the flow run)
+PENTAGI_VERIFY_SSL = env_bool("PENTAGI_VERIFY_SSL", False)  # PentAGI serves self-signed TLS
+
+# --- LLM server lifecycle (the model runs as a container on another fleet host) ---
+# Admins see live status and can start/stop it from the UI. We reach the host over
+# SSH using its stored fleet credentials (matched by LLM_HOST_IP to a server row).
+LLM_HOST_IP = env("LLM_HOST_IP", "10.195.102.52")
+LLM_CONTAINER = env("LLM_CONTAINER", "deepseek-v41-flash-abliterated")
+LLM_STATUS_URL = env("LLM_STATUS_URL", "http://10.195.102.52:8000/v1/models")
+LLM_API_KEY = env("LLM_API_KEY", "")  # falls back to CLAWDBOT_API_KEY if blank

@@ -42,8 +42,63 @@ def _headers() -> dict:
     return h
 
 
-def _resolve_model() -> str:
+# Friendly names for the chat/tool-capable models we surface in the picker.
+# We only offer the ones the endpoint actually lists (see list_models).
+CURATED_MODELS: dict[str, str] = {
+    "moonshotai/kimi-k3": "Kimi K3",
+    "moonshotai/kimi-k2.6": "Kimi K2.6",
+    "z-ai/glm-5.3": "GLM 5.3",
+    "z-ai/glm-5.3-flash": "GLM 5.3 Flash",
+    "deepseek-ai/deepseek-v4-flash-0731": "DeepSeek V4 Flash",
+    "nvidia/nemotron-3-super-120b-a12b": "Nemotron 3 Super 120B",
+    "nvidia/nemotron-3.5-lightning-30b-a3b": "Nemotron 3.5 Lightning 30B",
+    "nvidia/nemotron-nano-3-30b-a3b": "Nemotron Nano 3 30B",
+    "nvidia/llama-3.1-nemotron-70b-instruct": "Llama 3.1 Nemotron 70B",
+    "openai/gpt-oss-20b": "GPT-OSS 20B",
+    "mistralai/mistral-large-2-instruct": "Mistral Large 2",
+}
+
+_catalog_cache: tuple[float, list[str]] | None = None
+
+
+def _catalog_ids() -> list[str]:
+    """Model ids the endpoint currently advertises, cached for 5 minutes."""
+    global _catalog_cache
+    import time
+    now = time.time()
+    if _catalog_cache and now - _catalog_cache[0] < 300:
+        return _catalog_cache[1]
+    r = httpx.get(f"{config.CLAWDBOT_BASE_URL}/models", headers=_headers(), timeout=15)
+    r.raise_for_status()
+    ids = [m["id"] for m in r.json().get("data", []) if m.get("id")]
+    _catalog_cache = (now, ids)
+    return ids
+
+
+def list_models() -> list[dict]:
+    """Selectable chat models: our curated set intersected with what the
+    endpoint advertises, with the active default flagged. Falls back to the
+    configured model alone if the catalog can't be reached."""
+    default = config.CLAWDBOT_MODEL
+    try:
+        available = set(_catalog_ids())
+    except Exception as e:
+        raise ClawdbotError(f"Could not list models: {e}")
+    out = [
+        {"id": mid, "label": label, "default": mid == default}
+        for mid, label in CURATED_MODELS.items()
+        if mid in available
+    ]
+    # Make sure the configured default is always selectable, even if not curated.
+    if default and not any(m["id"] == default for m in out):
+        out.insert(0, {"id": default, "label": default, "default": True})
+    return out
+
+
+def _resolve_model(override: str | None = None) -> str:
     global _model_cache
+    if override:
+        return override
     if config.CLAWDBOT_MODEL:
         return config.CLAWDBOT_MODEL
     if _model_cache:
@@ -60,9 +115,9 @@ def _resolve_model() -> str:
     raise ClawdbotError("Clawdbot returned no models; set CLAWDBOT_MODEL")
 
 
-def _completion(messages: list[dict]) -> dict:
+def _completion(messages: list[dict], model: str | None = None) -> dict:
     payload = {
-        "model": _resolve_model(),
+        "model": _resolve_model(model),
         "messages": messages,
         "tools": tools.TOOLS,
         "tool_choice": "auto",
@@ -81,16 +136,18 @@ def _completion(messages: list[dict]) -> dict:
         raise ClawdbotError(f"Clawdbot request failed: {e}")
 
 
-def run_turn(db, history: list[dict], extra_system: str | None = None) -> list[dict]:
+def run_turn(db, history: list[dict], extra_system: str | None = None,
+             model: str | None = None) -> list[dict]:
     """Given prior chat history (list of role/content dicts), drive the tool loop.
     Returns the list of NEW messages produced this turn (assistant + tool messages).
-    extra_system, if given, is appended to the system prompt (e.g. per-server context)."""
+    extra_system, if given, is appended to the system prompt (e.g. per-server context).
+    model, if given, overrides the configured default for this turn."""
     system = SYSTEM_PROMPT + (f"\n\n{extra_system}" if extra_system else "")
     messages = [{"role": "system", "content": system}] + history
     produced: list[dict] = []
 
     for _ in range(config.CHAT_MAX_TOOL_ROUNDS):
-        msg = _completion(messages)
+        msg = _completion(messages, model)
         assistant_msg = {"role": "assistant", "content": msg.get("content") or ""}
         tool_calls = msg.get("tool_calls") or []
         if tool_calls:

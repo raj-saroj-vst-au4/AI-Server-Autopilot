@@ -10,11 +10,11 @@ import {
   Zap,
   Menu,
   LogOut,
-  ShieldCheck,
   ShieldAlert,
+  Radar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { clearToken, getToken } from "@/lib/api";
+import { api, clearToken, getToken } from "@/lib/api";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
@@ -27,11 +27,21 @@ const nav = [
   { href: "/chat", label: "Clawdbot", icon: Bot },
 ];
 
+interface FleetVitals {
+  total_servers: number;
+  online: number;
+  warning: number;
+  critical: number;
+  offline: number;
+  open_events: number;
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const [vitals, setVitals] = useState<FleetVitals | null>(null);
 
   useEffect(() => {
     if (!getToken()) {
@@ -40,6 +50,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       setReady(true);
     }
   }, [router]);
+
+  useEffect(() => {
+    if (!ready) return;
+    let alive = true;
+    const load = () =>
+      api<FleetVitals>("/dashboard/summary")
+        .then((v) => alive && setVitals(v))
+        .catch(() => {});
+    load();
+    const t = setInterval(load, 15000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [ready]);
 
   useEffect(() => {
     setOpen(false);
@@ -52,40 +77,71 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     router.replace("/login");
   }
 
+  const active = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const section = nav.find((n) => active(n.href))?.label ?? "Dashboard";
+
+  const crit = (vitals?.critical ?? 0) + (vitals?.offline ?? 0);
+  const warn = vitals?.warning ?? 0;
+
   const SidebarContent = (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 px-5 h-16 border-b">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <ShieldCheck className="h-5 w-5" />
-        </div>
-        <div className="leading-tight">
-          <div className="font-semibold text-sm">Server Autopilot</div>
-          <div className="text-[11px] text-muted-foreground">AI Operations</div>
-        </div>
-      </div>
-      <nav className="flex-1 space-y-1 p-3">
+    <div className="flex h-full flex-col bg-panel-2">
+      <Link href="/" className="flex items-center gap-2.5 px-5 h-16 border-b border-border">
+        <span className="flex h-8 w-8 items-center justify-center rounded-md border border-signal/40 bg-signal/10 text-signal">
+          <Radar className="h-[18px] w-[18px]" />
+        </span>
+        <span className="leading-tight">
+          <span className="block font-semibold text-[15px] tracking-tight">Autopilot</span>
+          <span className="block text-[11px] text-muted-foreground font-mono">fleet console</span>
+        </span>
+      </Link>
+
+      <nav className="flex-1 space-y-0.5 p-3">
         {nav.map((item) => {
-          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const on = active(item.href);
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "bg-primary text-primary-foreground"
+                "relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                on
+                  ? "bg-signal/10 text-signal"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
+              {on && <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-signal" />}
               <Icon className="h-4 w-4" />
               {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t p-3">
-        <Button variant="ghost" className="w-full justify-start text-muted-foreground" onClick={logout}>
+
+      {/* Live fleet readout — the console pulse, on every page */}
+      <div className="mx-3 mb-3 rounded-md border border-border bg-panel p-3">
+        <div className="flex items-baseline justify-between">
+          <span className="text-[11px] text-muted-foreground">Fleet</span>
+          <span className="font-mono text-sm tabular-nums">
+            <span className="text-ok">{vitals?.online ?? 0}</span>
+            <span className="text-muted-foreground">/{vitals?.total_servers ?? 0}</span>
+          </span>
+        </div>
+        <div className="mt-2 flex gap-3 text-[11px] font-mono">
+          <span className="inline-flex items-center gap-1 text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-warn" /> {warn}
+          </span>
+          <span className="inline-flex items-center gap-1 text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-danger" /> {crit}
+          </span>
+          <span className="ml-auto inline-flex items-center gap-1 text-muted-foreground">
+            <AlertTriangle className="h-3 w-3" /> {vitals?.open_events ?? 0}
+          </span>
+        </div>
+      </div>
+
+      <div className="border-t border-border p-3">
+        <Button variant="ghost" className="w-full justify-start" onClick={logout}>
           <LogOut className="h-4 w-4" />
           Sign out
         </Button>
@@ -95,27 +151,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-60 flex-col border-r bg-card fixed inset-y-0 left-0">
+      <aside className="hidden md:flex w-60 flex-col border-r border-border fixed inset-y-0 left-0">
         {SidebarContent}
       </aside>
 
-      {/* Mobile drawer */}
       {open && (
         <div className="md:hidden fixed inset-0 z-40 flex">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setOpen(false)} />
-          <aside className="relative w-64 bg-card border-r z-50">{SidebarContent}</aside>
+          <div className="fixed inset-0 bg-ground/80 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <aside className="relative w-64 border-r border-border z-50">{SidebarContent}</aside>
         </div>
       )}
 
       <div className="flex-1 md:ml-60 flex flex-col min-w-0">
-        {/* Topbar */}
-        <header className="h-16 border-b bg-card/80 backdrop-blur sticky top-0 z-30 flex items-center gap-2 px-4">
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
+        <header className="h-16 border-b border-border bg-ground/80 backdrop-blur sticky top-0 z-30 flex items-center gap-2 px-4 sm:px-6">
+          <Button variant="ghost" size="icon" className="md:hidden -ml-2" onClick={() => setOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="font-semibold md:hidden">Autopilot</div>
-          <div className="ml-auto flex items-center gap-1">
+          <span className="font-semibold tracking-tight">{section}</span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-muted-foreground">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-signal" />
+              </span>
+              live
+            </span>
             <ThemeToggle />
           </div>
         </header>

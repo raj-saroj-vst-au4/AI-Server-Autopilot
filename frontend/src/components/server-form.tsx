@@ -134,17 +134,17 @@ export function ServerForm({
         <Input value={form.description} onChange={(e) => set("description", e.target.value)} />
       </div>
 
-      <label className="flex items-start gap-3 rounded-lg border p-3">
+      <label className="flex items-start gap-3 rounded-md border border-border bg-panel-2 p-3">
         <Switch checked={form.high_priority} onCheckedChange={(v) => set("high_priority", v)} />
         <span>
           <span className="text-sm font-medium">High priority</span>
-          <span className="block text-xs text-muted-foreground">
+          <span className="block text-xs text-muted-foreground mt-0.5">
             Pin this server to a dedicated section at the top of the Servers page.
           </span>
         </span>
       </label>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
 
       <div className="flex gap-2 justify-end pt-2">
         <Button variant="outline" onClick={onCancel} disabled={saving}>

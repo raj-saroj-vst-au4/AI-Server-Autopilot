@@ -1,5 +1,8 @@
-// API client. In the browser we call same-origin /api/* which Next rewrites to the backend.
+// API client. In the browser we call same-origin <basePath>/api/* which nginx
+// (or Next rewrites in dev) routes to the backend.
 const TOKEN_KEY = "autopilot_token";
+// basePath the app is served under (e.g. "/autopilot"), inlined at build time.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -33,12 +36,12 @@ export async function api<T = any>(
   };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`/api${path}`, { ...options, headers });
+  const res = await fetch(`${BASE_PATH}/api${path}`, { ...options, headers });
 
   if (res.status === 401) {
     clearToken();
-    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-      window.location.href = "/login";
+    if (typeof window !== "undefined" && !window.location.pathname.startsWith(`${BASE_PATH}/login`)) {
+      window.location.href = `${BASE_PATH}/login`;
     }
     throw new ApiError(401, "Unauthorized");
   }
@@ -214,4 +217,36 @@ export interface ChatMessage {
   tool_calls: any[] | null;
   tool_name: string | null;
   ts: string;
+}
+
+export interface ChatModel {
+  id: string;
+  label: string;
+  default: boolean;
+}
+
+export interface EngineInfo {
+  key: string;
+  label: string;
+}
+
+export interface EngineStatus {
+  enabled: boolean;
+  provider: string;
+  label: string;
+  state: "stopped" | "starting" | "running" | "error";
+  reachable: boolean;
+  containers_running: number;
+  containers_total: number;
+  engines: EngineInfo[];
+  error?: string | null;
+}
+
+export interface LlmStatus {
+  host: string;
+  host_name: string | null;
+  container: string;
+  reachable: boolean;
+  model: string | null;
+  container_running: boolean | null;
 }

@@ -202,6 +202,17 @@ class ChatMessageOut(BaseModel):
 
 class ChatSendRequest(BaseModel):
     content: str = Field(min_length=1)
+    model: str | None = None  # optional per-message model override
+
+
+class ChatModelOut(BaseModel):
+    id: str
+    label: str
+    default: bool = False
+
+
+class EngineProviderIn(BaseModel):
+    provider: str  # "hexstrike" | "pentagi"
 
 
 class QuickChatMessage(BaseModel):

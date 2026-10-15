@@ -1,52 +1,44 @@
+# Autopilot core app — a single container (MariaDB + backend + frontend + nginx,
+# run by supervisord). Served at http://<host>/autopilot on port 80.
+#
+# The host Docker socket is mounted so the backend can spin the pentest-engine
+# containers (HexStrike / PentAGI) up and down on demand. Those engines are
+# separate stacks (see hexstrike/ and pentagi/), not part of this image.
 services:
-  backend:
-    build: ./backend
-    container_name: autopilot-backend
+  app:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    image: autopilot-app
+    container_name: autopilot
     restart: unless-stopped
     env_file: .env
     environment:
-      # DB_HOST points at the persistent MySQL running on the host
-      DB_HOST: ${DB_HOST:-host.docker.internal}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_USER: ${DB_USER:-autopilot}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME:-autopilot}
-      # On-demand pentesting (HexStrike AI). Defaults to the bundled 'hexstrike'
-      # service; override in .env to point at an external engine.
-      HEXSTRIKE_BASE_URL: ${HEXSTRIKE_BASE_URL:-http://hexstrike:8888}
-      PENTEST_ENABLED: ${PENTEST_ENABLED:-false}
-      PENTEST_ALLOW_AGGRESSIVE: ${PENTEST_ALLOW_AGGRESSIVE:-false}
+      # DB runs inside this same container.
+      DB_HOST: 127.0.0.1
+      DB_PORT: "3306"
+      # Engines run as sibling containers on the shared autopilot-net, reached by name.
+      HEXSTRIKE_BASE_URL: http://hexstrike:8888
+      PENTAGI_BASE_URL: https://pentagi:8443
+    networks:
+      - autopilot-net
+    ports:
+      # Host Docker on .70 is rootless and can't bind :80, so publish on a high
+      # port. (Set APP_PORT=80 only if the host enables unprivileged port 80.)
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - autopilot-db-data:/var/lib/mysql
+      - ./autopilot_dump.sql:/seed/autopilot_dump.sql:ro
+      # Rootless Docker socket on the host (used by the backend to control engines).
+      - ${DOCKER_SOCK:-/run/user/1000/docker.sock}:/var/run/docker.sock
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    ports:
-      - "${BACKEND_PORT:-8010}:8000"
 
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        BACKEND_URL: http://backend:8000
-    container_name: autopilot-frontend
-    restart: unless-stopped
-    environment:
-      BACKEND_URL: http://backend:8000
-    depends_on:
-      - backend
-    ports:
-      - "${FRONTEND_PORT:-3010}:3000"
+volumes:
+  autopilot-db-data:
 
-  # Optional pentesting engine. Not started by default — bring it up with:
-  #   docker compose --profile pentest up -d --build
-  # Heavy Kali-based image (see hexstrike/Dockerfile). The backend reaches it at
-  # http://hexstrike:8888 on the compose network, so the host port is bound to
-  # localhost only — the engine's /api/command runs arbitrary commands and has no
-  # auth, so it must NOT be exposed on a public interface.
-  hexstrike:
-    build: ./hexstrike
-    container_name: autopilot-hexstrike
-    restart: unless-stopped
-    profiles: ["pentest"]
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "127.0.0.1:${HEXSTRIKE_PORT:-8888}:8888"
+# Shared with the on-demand engine containers (created once on the host:
+#   docker network create autopilot-net).
+networks:
+  autopilot-net:
+    external: true

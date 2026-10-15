@@ -50,7 +50,7 @@ function Events() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Events</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Events</h1>
           <p className="text-muted-foreground text-sm">Anomalies and abnormal activity across the fleet</p>
         </div>
         <div className="sm:ml-auto flex gap-2">
@@ -59,7 +59,7 @@ function Events() {
             <option value="resolved">Resolved</option>
             <option value="all">All</option>
           </Select>
-          <Select value={severity} onChange={(e) => setSeverity(e.target.value)} className="w-36">
+          <Select value={severity} onChange={(e) => setSeverity(e.target.value)} className="w-40">
             <option value="">All severities</option>
             <option value="critical">Critical</option>
             <option value="warning">Warning</option>
@@ -69,40 +69,50 @@ function Events() {
       </div>
 
       {loading && events.length === 0 ? (
-        <div className="flex justify-center py-20"><Spinner className="h-8 w-8" /></div>
+        <div className="flex justify-center py-24">
+          <Spinner className="h-8 w-8" />
+        </div>
       ) : (
-        <Card>
-          <CardContent className="p-0 divide-y">
+        <Card className="overflow-hidden">
+          <div className="divide-y divide-border">
             {events.length === 0 && (
               <p className="text-sm text-muted-foreground py-16 text-center">No events match this filter.</p>
             )}
             {events.map((e) => (
               <div key={e.id} className="flex items-start gap-3 p-4">
-                <Badge variant={
-                  e.severity === "critical" ? "critical" :
-                  e.severity === "warning" ? "warning" :
-                  e.category === "recovered" ? "success" : "muted"
-                }>
+                <Badge
+                  variant={
+                    e.severity === "critical"
+                      ? "critical"
+                      : e.severity === "warning"
+                      ? "warning"
+                      : e.category === "recovered"
+                      ? "success"
+                      : "muted"
+                  }
+                  className="mt-0.5 shrink-0"
+                >
                   {e.severity}
                 </Badge>
                 <div className="min-w-0 flex-1">
-                  <div className="text-sm">{e.message}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    <Link href={`/servers/${e.server_id}`} className="hover:underline font-medium">
+                  <div className="text-sm leading-snug">{e.message}</div>
+                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-1">
+                    <Link href={`/servers/${e.server_id}`} className="font-medium text-foreground/80 hover:text-signal transition-colors">
                       {e.server_name}
                     </Link>
-                    {" · "}{e.category} · {timeAgo(e.ts)}
-                    {e.resolved && " · resolved"}
+                    <span className="font-mono text-muted-foreground/70">{e.category}</span>
+                    <span className="font-mono ml-auto">{timeAgo(e.ts)}</span>
+                    {e.resolved && <Badge variant="success">resolved</Badge>}
                   </div>
                 </div>
                 {!e.resolved && e.severity !== "info" && (
-                  <Button variant="ghost" size="sm" onClick={() => resolve(e.id)}>
+                  <Button variant="outline" size="sm" onClick={() => resolve(e.id)} className="shrink-0">
                     <Check className="h-4 w-4" /> Resolve
                   </Button>
                 )}
               </div>
             ))}
-          </CardContent>
+          </div>
         </Card>
       )}
     </div>

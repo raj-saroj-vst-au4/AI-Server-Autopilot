@@ -2,6 +2,10 @@
 .env
 .env.local
 *.dbcreds
+# PentAGI engine env — holds LLM/NVIDIA keys + DB/cookie secrets, never commit
+deploy/engines/pentagi/pentagi.env
+# Vendored PentAGI upstream download (reference only; adapted copy lives in deploy/)
+/pentagi/
 
 # python
 __pycache__/

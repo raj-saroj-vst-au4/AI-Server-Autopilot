@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, Zap, Bot, History } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge, Modal, Spinner, Switch, Select } from "@/components/ui/misc";
 import { Input, Label, Textarea } from "@/components/ui/input";
@@ -71,10 +71,8 @@ function Automations() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Automations</h1>
-          <p className="text-muted-foreground text-sm">
-            Actions the system runs automatically when anomalies fire
-          </p>
+          <h1 className="text-xl font-semibold tracking-tight">Automations</h1>
+          <p className="text-muted-foreground text-sm">Actions the system runs automatically when anomalies fire</p>
         </div>
         <Button className="sm:ml-auto" onClick={() => { setEditing(undefined); setShowForm(true); }}>
           <Plus className="h-4 w-4" /> New automation
@@ -82,13 +80,15 @@ function Automations() {
       </div>
 
       {loading && actions.length === 0 ? (
-        <div className="flex justify-center py-20"><Spinner className="h-8 w-8" /></div>
+        <div className="flex justify-center py-24">
+          <Spinner className="h-8 w-8" />
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {actions.length === 0 && (
             <Card className="lg:col-span-2">
-              <CardContent className="py-12 text-center text-sm text-muted-foreground">
-                No automations defined. Create one to let the system remediate issues without you.
+              <CardContent className="py-14 text-center text-sm text-muted-foreground">
+                No automations yet. Create one to let the system remediate issues without you.
               </CardContent>
             </Card>
           )}
@@ -96,12 +96,12 @@ function Automations() {
             <Card key={a.id}>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5">
-                    {a.require_ai ? <Bot className="h-5 w-5 text-primary" /> : <Zap className="h-5 w-5 text-amber-500" />}
-                  </div>
+                  <span className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-md border border-border bg-panel-2 shrink-0">
+                    {a.require_ai ? <Bot className="h-4 w-4 text-signal" /> : <Zap className="h-4 w-4 text-warn" />}
+                  </span>
                   <div className="min-w-0 flex-1">
-                    <div className="font-semibold">{a.name}</div>
-                    {a.description && <div className="text-xs text-muted-foreground">{a.description}</div>}
+                    <div className="font-semibold tracking-tight">{a.name}</div>
+                    {a.description && <div className="text-xs text-muted-foreground mt-0.5">{a.description}</div>}
                   </div>
                   <Switch checked={a.enabled} onCheckedChange={() => toggle(a)} />
                 </div>
@@ -111,19 +111,20 @@ function Automations() {
                   {a.require_ai && <Badge variant="default">AI-gated</Badge>}
                   <Badge variant="muted">cooldown {a.cooldown_minutes}m</Badge>
                 </div>
-                <code className="block text-xs bg-muted rounded px-2 py-1.5 mt-3 overflow-x-auto font-mono">
+                <code className="block text-xs bg-panel-2 border border-border rounded px-2.5 py-1.5 mt-3 overflow-x-auto text-foreground/90">
+                  <span className="text-signal select-none">$ </span>
                   {a.command}
                 </code>
                 <div className="flex items-center mt-3">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-[11px] text-muted-foreground font-mono">
                     {a.last_run_at ? `last run ${timeAgo(a.last_run_at)}` : "never run"}
                   </span>
                   <div className="ml-auto flex">
-                    <Button variant="ghost" size="icon" onClick={() => { setEditing(a); setShowForm(true); }}>
+                    <Button variant="ghost" size="icon" onClick={() => { setEditing(a); setShowForm(true); }} aria-label="Edit automation">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleting(a)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
+                    <Button variant="ghost" size="icon" onClick={() => setDeleting(a)} aria-label="Delete automation">
+                      <Trash2 className="h-4 w-4 text-danger" />
                     </Button>
                   </div>
                 </div>
@@ -133,15 +134,13 @@ function Automations() {
         </div>
       )}
 
-      <Card>
-        <CardHeader className="flex-row items-center gap-2">
-          <History className="h-4 w-4" />
-          <CardTitle className="text-base">Execution history</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 divide-y">
-          {runs.length === 0 && (
-            <p className="text-sm text-muted-foreground py-8 text-center">No automations have run yet.</p>
-          )}
+      <Card className="overflow-hidden">
+        <div className="flex items-center gap-2 px-4 sm:px-5 h-12 border-b border-border">
+          <History className="h-4 w-4 text-muted-foreground" />
+          <span className="font-semibold text-sm tracking-tight">Execution history</span>
+        </div>
+        <div className="divide-y divide-border">
+          {runs.length === 0 && <p className="text-sm text-muted-foreground py-10 text-center">No automations have run yet.</p>}
           {runs.map((r) => (
             <div key={r.id} className="p-4">
               <div className="flex items-center gap-2 flex-wrap">
@@ -151,17 +150,17 @@ function Automations() {
                 <span className="text-sm font-medium">{r.action_name}</span>
                 <span className="text-xs text-muted-foreground">on {r.server_name}</span>
                 <Badge variant={r.decided_by === "ai" ? "default" : "outline"}>{r.decided_by}</Badge>
-                <span className="text-xs text-muted-foreground ml-auto">{timeAgo(r.ts)}</span>
+                <span className="text-[11px] text-muted-foreground font-mono ml-auto">{timeAgo(r.ts)}</span>
               </div>
-              {r.ai_reason && <div className="text-xs text-muted-foreground mt-1 italic">AI: {r.ai_reason}</div>}
+              {r.ai_reason && <div className="text-xs text-muted-foreground mt-1.5 italic">AI: {r.ai_reason}</div>}
               {r.output && (
-                <pre className="text-xs bg-muted rounded px-2 py-1.5 mt-2 overflow-x-auto whitespace-pre-wrap max-h-32">
+                <pre className="text-xs bg-panel-2 border border-border rounded px-2.5 py-1.5 mt-2 overflow-x-auto whitespace-pre-wrap max-h-32">
                   {r.output}
                 </pre>
               )}
             </div>
           ))}
-        </CardContent>
+        </div>
       </Card>
 
       <Modal open={showForm} onClose={() => setShowForm(false)} title={editing ? "Edit automation" : "New automation"} wide>
@@ -174,10 +173,12 @@ function Automations() {
       </Modal>
 
       <Modal open={!!deleting} onClose={() => setDeleting(undefined)} title="Delete automation">
-        <p className="text-sm">Delete <span className="font-semibold">{deleting?.name}</span>?</p>
-        <div className="flex gap-2 justify-end mt-4">
+        <p className="text-sm">
+          Delete <span className="font-semibold">{deleting?.name}</span>?
+        </p>
+        <div className="flex gap-2 justify-end mt-5">
           <Button variant="outline" onClick={() => setDeleting(undefined)}>Cancel</Button>
-          <Button variant="destructive" onClick={doDelete}>Delete</Button>
+          <Button variant="destructive" onClick={doDelete}>Delete automation</Button>
         </div>
       </Modal>
     </div>
@@ -255,21 +256,28 @@ function AutomationForm({
         <div>
           <Label>Trigger</Label>
           <Select value={form.trigger_category} onChange={(e) => set("trigger_category", e.target.value)}>
-            {TRIGGERS.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+            {TRIGGERS.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
           </Select>
         </div>
         <div>
           <Label>Server</Label>
           <Select value={form.server_id} onChange={(e) => set("server_id", e.target.value)}>
             <option value="">All servers</option>
-            {servers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {servers.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
           </Select>
         </div>
       </div>
       <div>
         <Label>Command (runs over SSH on the affected server)</Label>
-        <Textarea value={form.command} onChange={(e) => set("command", e.target.value)}
-          placeholder="systemctl restart nginx" />
+        <Textarea value={form.command} onChange={(e) => set("command", e.target.value)} placeholder="systemctl restart nginx" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
@@ -282,22 +290,24 @@ function AutomationForm({
           </label>
         </div>
       </div>
-      <label className="flex items-start gap-2 text-sm rounded-lg border p-3">
+      <label className="flex items-start gap-3 rounded-md border border-border bg-panel-2 p-3">
         <Switch checked={form.require_ai} onCheckedChange={(v) => set("require_ai", v)} />
         <span>
-          <span className="font-medium">Require AI approval</span>
-          <span className="block text-xs text-muted-foreground">
-            The local AI reviews each event and decides whether it's safe to run this action.
-            Off = run immediately on any matching anomaly.
+          <span className="text-sm font-medium">Require AI approval</span>
+          <span className="block text-xs text-muted-foreground mt-0.5">
+            The local AI reviews each event and decides whether it's safe to run this action. Off runs immediately on
+            any matching anomaly.
           </span>
         </span>
       </label>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
       <div className="flex gap-2 justify-end pt-1">
-        <Button variant="outline" onClick={onCancel} disabled={saving}>Cancel</Button>
+        <Button variant="outline" onClick={onCancel} disabled={saving}>
+          Cancel
+        </Button>
         <Button onClick={save} disabled={saving || !form.name || !form.command}>
-          {saving ? <Spinner /> : editing ? "Save" : "Create"}
+          {saving ? <Spinner /> : editing ? "Save changes" : "Create automation"}
         </Button>
       </div>
     </div>
