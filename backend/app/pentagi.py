@@ -20,7 +20,7 @@ class PentagiError(Exception):
 
 _CREATE = ("mutation($p:String!,$i:String!){createFlow(modelProvider:$p,input:$i)"
            "{id title status}}")
-_FLOW = ("query($id:ID!){flow(id:$id){id title status} "
+_FLOW = ("query($id:ID!){flow(flowId:$id){id title status} "
          "tasks(flowId:$id){title status result subtasks{title description status result}}}")
 
 
