@@ -65,4 +65,4 @@ def get_flow(flow_id: str) -> dict:
 
 
 def ui_url(flow_id: str) -> str:
-    return f"{config.PENTAGI_PUBLIC_URL}/chat/{flow_id}"
+    return f"{config.PENTAGI_PUBLIC_URL}/flows/{flow_id}"
