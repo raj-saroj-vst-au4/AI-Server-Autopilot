@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" font-family="'Space Grotesk','Segoe UI',system-ui,sans-serif">
+  <rect width="1200" height="740" fill="#0b1117"/>
+  <!-- sidebar -->
+  <rect width="214" height="740" fill="#0e161d"/>
+  <line x1="214" y1="0" x2="214" y2="740" stroke="#1b2832"/>
+  <g transform="translate(22,26)">
+    <rect width="30" height="30" rx="8" fill="#111b23" stroke="#223441"/>
+    <circle cx="15" cy="15" r="8" fill="none" stroke="#2bb8e6" stroke-width="2.5"/><circle cx="15" cy="15" r="2.5" fill="#2bb8e6"/>
+    <text x="42" y="20" font-size="16" font-weight="700" fill="#e7eef3">Autopilot</text>
+  </g>
+  <g font-size="14" fill="#9fb2bd">
+    <text x="46" y="110">Dashboard</text><text x="46" y="152">Servers</text><text x="46" y="194">Events</text>
+    <text x="46" y="236">Automations</text><text x="46" y="278">Security</text>
+    <rect x="14" y="296" width="186" height="38" rx="9" fill="#13222b"/><rect x="14" y="298" width="3" height="34" rx="2" fill="#2bb8e6"/>
+    <text x="46" y="320" fill="#e7eef3" font-weight="600">Clawdbot</text>
+    <g fill="#51606b"><circle cx="26" cy="105" r="3.5"/><circle cx="26" cy="147" r="3.5"/><circle cx="26" cy="189" r="3.5"/><circle cx="26" cy="231" r="3.5"/><circle cx="26" cy="273" r="3.5"/><circle cx="26" cy="315" r="3.5"/></g>
+  </g>
+
+  <!-- chat header -->
+  <g transform="translate(246,28)">
+    <circle cx="16" cy="18" r="16" fill="#132029"/><circle cx="16" cy="18" r="7" fill="none" stroke="#2bb8e6" stroke-width="2"/>
+    <text x="44" y="16" font-size="16" font-weight="700" fill="#e7eef3">Clawdbot</text>
+    <text x="44" y="34" font-size="12" fill="#8a9ca6">Ask me to operate the fleet — I run real actions</text>
+    <!-- model selector -->
+    <g transform="translate(700,2)">
+      <rect width="206" height="32" rx="9" fill="#0e161c" stroke="#223441"/>
+      <circle cx="16" cy="16" r="4" fill="#17946a"/>
+      <text x="30" y="21" font-size="12.5" fill="#cfdbe3" font-family="'JetBrains Mono'">deepseek-v4.1-flash</text>
+      <path d="M186 13 l5 5 l5 -5" stroke="#6b7d88" stroke-width="2" fill="none"/>
+    </g>
+  </g>
+  <line x1="246" y1="76" x2="1154" y2="76" stroke="#1a2730"/>
+
+  <!-- messages -->
+  <g font-size="13.5">
+    <!-- user -->
+    <g transform="translate(640,104)">
+      <rect width="300" height="40" rx="12" fill="#17313d"/>
+      <text x="20" y="25" fill="#dff0f7">List all my servers and their status.</text>
+    </g>
+    <circle cx="968" cy="124" r="15" fill="#1c2b34"/><text x="961" y="129" font-size="11" fill="#9fb2bd">you</text>
+
+    <!-- assistant -->
+    <circle cx="262" cy="176" r="15" fill="#132029"/><circle cx="262" cy="176" r="6" fill="none" stroke="#2bb8e6" stroke-width="2"/>
+    <g transform="translate(290,160)">
+      <rect width="620" height="150" rx="12" fill="#121a22" stroke="#20303b"/>
+      <text x="20" y="30" fill="#cfdbe3">Here are all registered servers — all currently</text>
+      <text x="20" y="30" fill="#cfdbe3"><tspan dx="372" fill="#5fcf9f" font-weight="600">online</tspan><tspan fill="#cfdbe3">:</tspan></text>
+      <g font-family="'JetBrains Mono'" font-size="11.5" fill="#9fb2bd">
+        <line x1="20" y1="48" x2="600" y2="48" stroke="#1a2730"/>
+        <text x="20" y="70">Web Server</text><text x="320" y="70">10.0.0.21</text><text x="500" y="70" fill="#5fcf9f">● online</text>
+        <text x="20" y="92">Mail Server</text><text x="320" y="92">10.0.0.1</text><text x="500" y="92" fill="#5fcf9f">● online</text>
+        <text x="20" y="114">GPU Node 01</text><text x="320" y="114">10.0.0.70</text><text x="500" y="114" fill="#5fcf9f">● online</text>
+        <text x="20" y="136">GPU Host</text><text x="320" y="136">10.0.0.52</text><text x="500" y="136" fill="#5fcf9f">● online</text>
+      </g>
+    </g>
+
+    <!-- user 2 -->
+    <g transform="translate(560,332)">
+      <rect width="380" height="40" rx="12" fill="#17313d"/>
+      <text x="20" y="25" fill="#dff0f7">Run a vuln scan on Web Server.</text>
+    </g>
+    <circle cx="968" cy="352" r="15" fill="#1c2b34"/><text x="961" y="357" font-size="11" fill="#9fb2bd">you</text>
+
+    <!-- assistant 2 -->
+    <circle cx="262" cy="404" r="15" fill="#132029"/><circle cx="262" cy="404" r="6" fill="none" stroke="#2bb8e6" stroke-width="2"/>
+    <g transform="translate(290,388)">
+      <rect width="560" height="92" rx="12" fill="#121a22" stroke="#20303b"/>
+      <g transform="translate(20,22)"><rect width="150" height="22" rx="6" fill="#161d16" stroke="#26371f"/><text x="10" y="16" font-size="11" fill="#9fd38a" font-family="'JetBrains Mono'">▸ run_pentest()</text></g>
+      <text x="20" y="66" fill="#cfdbe3">Started a <tspan fill="#79cdea">vuln</tspan> scan on Web Server (10.0.0.21) via</text>
+      <text x="20" y="84" fill="#cfdbe3">PentAGI — flow #12 created. I'll report findings when it finishes.</text>
+    </g>
+  </g>
+
+  <!-- input -->
+  <g transform="translate(246,650)">
+    <rect width="820" height="48" rx="12" fill="#0e161c" stroke="#223441"/>
+    <text x="20" y="30" font-size="13.5" fill="#5f7079">Message Clawdbot…  (e.g. "set disk quota 5GB for alice on db-01")</text>
+    <g transform="translate(832,0)"><rect width="76" height="48" rx="12" fill="#2bb8e6"/><path d="M30 24 l18 -8 l-6 8 l6 8 z" fill="#06222c"/></g>
+  </g>
+</svg>

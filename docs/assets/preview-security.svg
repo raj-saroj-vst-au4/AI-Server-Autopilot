@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" font-family="'Space Grotesk','Segoe UI',system-ui,sans-serif">
+  <rect width="1200" height="740" fill="#0b1117"/>
+  <!-- sidebar -->
+  <rect width="214" height="740" fill="#0e161d"/>
+  <line x1="214" y1="0" x2="214" y2="740" stroke="#1b2832"/>
+  <g transform="translate(22,26)">
+    <rect width="30" height="30" rx="8" fill="#111b23" stroke="#223441"/>
+    <circle cx="15" cy="15" r="8" fill="none" stroke="#2bb8e6" stroke-width="2.5"/><circle cx="15" cy="15" r="2.5" fill="#2bb8e6"/>
+    <text x="42" y="20" font-size="16" font-weight="700" fill="#e7eef3">Autopilot</text>
+  </g>
+  <g font-size="14" fill="#9fb2bd">
+    <text x="46" y="110">Dashboard</text>
+    <text x="46" y="152">Servers</text>
+    <text x="46" y="194">Events</text>
+    <text x="46" y="236">Automations</text>
+    <rect x="14" y="254" width="186" height="38" rx="9" fill="#13222b"/>
+    <rect x="14" y="256" width="3" height="34" rx="2" fill="#2bb8e6"/>
+    <text x="46" y="278" fill="#e7eef3" font-weight="600">Security</text>
+    <text x="46" y="320">Clawdbot</text>
+    <g fill="#51606b">
+      <circle cx="26" cy="105" r="3.5"/><circle cx="26" cy="147" r="3.5"/><circle cx="26" cy="189" r="3.5"/>
+      <circle cx="26" cy="231" r="3.5"/><circle cx="26" cy="273" r="3.5"/><circle cx="26" cy="315" r="3.5"/>
+    </g>
+  </g>
+
+  <!-- header -->
+  <text x="246" y="56" font-size="24" font-weight="700" fill="#e7eef3">Security</text>
+  <text x="246" y="80" font-size="13.5" fill="#8a9ca6">On-demand penetration testing across the fleet</text>
+
+  <!-- engine control -->
+  <g transform="translate(246,104)">
+    <rect width="452" height="118" rx="14" fill="#121a22" stroke="#20303b"/>
+    <circle cx="34" cy="40" r="8" fill="#17946a"/>
+    <text x="54" y="36" font-size="16" font-weight="700" fill="#e7eef3">PentAGI engine</text>
+    <text x="54" y="36" font-size="16" fill="#e7eef3"><tspan dx="110" fill="#8a9ca6" font-weight="400">Online</tspan></text>
+    <rect x="315" y="26" width="64" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="327" y="41" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">reachable</text>
+    <text x="54" y="58" font-size="12" fill="#8a9ca6" font-family="'JetBrains Mono'">3 / 3 containers running</text>
+    <!-- controls -->
+    <g transform="translate(20,74)">
+      <rect width="190" height="30" rx="8" fill="#0e161c" stroke="#223441"/>
+      <text x="14" y="20" font-size="13" fill="#cfdbe3">PentAGI</text>
+      <path d="M168 13 l6 6 l6 -6" stroke="#6b7d88" stroke-width="2" fill="none"/>
+    </g>
+    <g transform="translate(222,74)">
+      <rect width="100" height="30" rx="8" fill="#161f27" stroke="#2a3b46"/>
+      <rect x="18" y="10" width="10" height="10" rx="2" fill="#cfdbe3"/>
+      <text x="36" y="20" font-size="13" fill="#cfdbe3">Stop</text>
+    </g>
+  </g>
+
+  <!-- llm control -->
+  <g transform="translate(714,104)">
+    <rect width="440" height="118" rx="14" fill="#121a22" stroke="#20303b"/>
+    <circle cx="34" cy="40" r="9" fill="none" stroke="#17946a" stroke-width="3"/><path d="M30 40 l3 3 l6 -7" stroke="#17946a" stroke-width="3" fill="none"/>
+    <text x="54" y="36" font-size="16" font-weight="700" fill="#e7eef3">Local LLM</text>
+    <text x="150" y="36" font-size="14" fill="#8a9ca6">Online</text>
+    <rect x="300" y="26" width="60" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="312" y="41" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">serving</text>
+    <text x="54" y="58" font-size="12" fill="#8a9ca6" font-family="'JetBrains Mono'">deepseek-v4.1-flash · GPU Host</text>
+    <g transform="translate(20,74)">
+      <rect width="100" height="30" rx="8" fill="#161f27" stroke="#2a3b46"/>
+      <rect x="18" y="10" width="10" height="10" rx="2" fill="#cfdbe3"/>
+      <text x="36" y="20" font-size="13" fill="#cfdbe3">Stop</text>
+    </g>
+  </g>
+
+  <!-- scans -->
+  <text x="246" y="258" font-size="15" font-weight="600" fill="#cfdbe3">Recent scans</text>
+  <g transform="translate(246,274)" font-family="'Space Grotesk'">
+    <rect width="908" height="396" rx="14" fill="#121a22" stroke="#20303b"/>
+    <g font-size="13">
+      <!-- rows -->
+      <g transform="translate(0,0)">
+        <g transform="translate(20,20)">
+          <rect width="58" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="12" y="15" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">done</text>
+          <text x="78" y="16" fill="#e7eef3" font-weight="600">recon</text>
+          <text x="140" y="16" fill="#9fb2bd">PentAGI flow completed · 8 task(s)</text>
+          <text x="690" y="16" fill="#79cdea" font-family="'JetBrains Mono'" font-size="11">view report ↗</text>
+          <rect x="800" y="2" width="90" height="20" rx="10" fill="#141d26" stroke="#223441"/><text x="812" y="16" font-size="10.5" fill="#79cdea" font-family="'JetBrains Mono'">11 info</text>
+        </g>
+        <line x1="0" y1="56" x2="908" y2="56" stroke="#1a2730"/>
+      </g>
+      <g transform="translate(0,56)">
+        <g transform="translate(20,20)">
+          <rect width="68" height="22" rx="11" fill="#1a130f" stroke="#40301d"/><text x="10" y="15" font-size="11" fill="#e0b063" font-family="'JetBrains Mono'">running</text>
+          <circle cx="100" cy="11" r="6" fill="none" stroke="#e0b063" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="118" y="16" fill="#e7eef3" font-weight="600">vuln</text>
+          <text x="170" y="16" fill="#9fb2bd">PentAGI flow running · Kali sandbox active</text>
+          <rect x="800" y="2" width="90" height="20" rx="10" fill="#141d26" stroke="#223441"/><text x="812" y="16" font-size="10.5" fill="#8a9ca6" font-family="'JetBrains Mono'">scanning…</text>
+        </g>
+        <line x1="0" y1="56" x2="908" y2="56" stroke="#1a2730"/>
+      </g>
+      <g transform="translate(0,112)">
+        <g transform="translate(20,20)">
+          <rect width="58" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="12" y="15" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">done</text>
+          <text x="78" y="16" fill="#e7eef3" font-weight="600">recon</text>
+          <text x="140" y="16" fill="#9fb2bd">HexStrike · 11 open port(s)</text>
+          <rect x="762" y="2" width="56" height="20" rx="10" fill="#201216" stroke="#3a1d24"/><text x="772" y="16" font-size="10.5" fill="#ef8a9a" font-family="'JetBrains Mono'">2 high</text>
+          <rect x="824" y="2" width="66" height="20" rx="10" fill="#141d26" stroke="#223441"/><text x="834" y="16" font-size="10.5" fill="#8a9ca6" font-family="'JetBrains Mono'">9 info</text>
+        </g>
+        <line x1="0" y1="56" x2="908" y2="56" stroke="#1a2730"/>
+      </g>
+      <g transform="translate(0,168)">
+        <g transform="translate(20,20)">
+          <rect width="58" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="12" y="15" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">done</text>
+          <text x="78" y="16" fill="#e7eef3" font-weight="600">web</text>
+          <text x="140" y="16" fill="#9fb2bd">HexStrike · nuclei web templates · clean</text>
+          <rect x="824" y="2" width="66" height="20" rx="10" fill="#0f1a16" stroke="#1d4035"/><text x="840" y="16" font-size="10.5" fill="#5fcf9f" font-family="'JetBrains Mono'">clean</text>
+        </g>
+        <line x1="0" y1="56" x2="908" y2="56" stroke="#1a2730"/>
+      </g>
+      <g transform="translate(20,210)" fill="#6b7d88" font-size="12" font-family="'JetBrains Mono'">
+        <text x="0" y="16">smart · App Server · by r4id · 3h ago</text>
+      </g>
+    </g>
+  </g>
+</svg>

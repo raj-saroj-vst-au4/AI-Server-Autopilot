@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" font-family="'Space Grotesk','Segoe UI',system-ui,sans-serif">
+  <rect width="1200" height="740" fill="#0b1117"/>
+  <!-- sidebar -->
+  <rect width="214" height="740" fill="#0e161d"/>
+  <line x1="214" y1="0" x2="214" y2="740" stroke="#1b2832"/>
+  <g transform="translate(22,26)">
+    <rect width="30" height="30" rx="8" fill="#111b23" stroke="#223441"/>
+    <circle cx="15" cy="15" r="8" fill="none" stroke="#2bb8e6" stroke-width="2.5"/><circle cx="15" cy="15" r="2.5" fill="#2bb8e6"/>
+    <text x="42" y="20" font-size="16" font-weight="700" fill="#e7eef3">Autopilot</text>
+  </g>
+  <g font-size="14" fill="#9fb2bd">
+    <rect x="14" y="86" width="186" height="38" rx="9" fill="#13222b"/>
+    <rect x="14" y="88" width="3" height="34" rx="2" fill="#2bb8e6"/>
+    <text x="46" y="110" fill="#e7eef3" font-weight="600">Dashboard</text>
+    <text x="46" y="152">Servers</text>
+    <text x="46" y="194">Events</text>
+    <text x="46" y="236">Automations</text>
+    <text x="46" y="278">Security</text>
+    <text x="46" y="320">Clawdbot</text>
+    <g fill="#51606b">
+      <circle cx="26" cy="105" r="3.5"/><circle cx="26" cy="147" r="3.5"/><circle cx="26" cy="189" r="3.5"/>
+      <circle cx="26" cy="231" r="3.5"/><circle cx="26" cy="273" r="3.5"/><circle cx="26" cy="315" r="3.5"/>
+    </g>
+  </g>
+  <g transform="translate(22,690)"><circle cx="15" cy="12" r="13" fill="#182530"/><text x="13" y="17" font-size="12" fill="#79cdea">r4</text><text x="40" y="17" font-size="13" fill="#9fb2bd">r4id</text></g>
+
+  <!-- header -->
+  <text x="246" y="56" font-size="24" font-weight="700" fill="#e7eef3">Fleet overview</text>
+  <text x="246" y="80" font-size="13.5" fill="#8a9ca6">Live metrics across all registered servers · auto-refresh 15s</text>
+
+  <!-- stat tiles -->
+  <g transform="translate(246,104)" font-family="'JetBrains Mono',monospace">
+    <g><rect width="214" height="86" rx="12" fill="#121a22" stroke="#20303b"/><text x="18" y="34" font-size="12" fill="#8a9ca6" font-family="'Space Grotesk'">Servers online</text><text x="18" y="68" font-size="30" font-weight="700" fill="#5fcf9f">7 / 7</text></g>
+    <g transform="translate(230,0)"><rect width="214" height="86" rx="12" fill="#121a22" stroke="#20303b"/><text x="18" y="34" font-size="12" fill="#8a9ca6" font-family="'Space Grotesk'">Open events</text><text x="18" y="68" font-size="30" font-weight="700" fill="#e0b063">3</text></g>
+    <g transform="translate(460,0)"><rect width="214" height="86" rx="12" fill="#121a22" stroke="#20303b"/><text x="18" y="34" font-size="12" fill="#8a9ca6" font-family="'Space Grotesk'">Avg load / core</text><text x="18" y="68" font-size="30" font-weight="700" fill="#e7eef3">0.21</text></g>
+    <g transform="translate(690,0)"><rect width="214" height="86" rx="12" fill="#121a22" stroke="#20303b"/><text x="18" y="34" font-size="12" fill="#8a9ca6" font-family="'Space Grotesk'">High priority</text><text x="18" y="68" font-size="30" font-weight="700" fill="#79cdea">2</text></g>
+  </g>
+
+  <!-- server cards -->
+  <g transform="translate(246,214)">
+    <!-- card template rows -->
+    <g font-family="'Space Grotesk'">
+      <!-- row 1 -->
+      <g transform="translate(0,0)">
+        <rect width="918" height="92" rx="12" fill="#121a22" stroke="#20303b"/>
+        <circle cx="26" cy="34" r="6" fill="#17946a"/>
+        <text x="46" y="32" font-size="15.5" font-weight="600" fill="#e7eef3">GPU Node 01</text>
+        <text x="46" y="52" font-size="12" fill="#8a9ca6" font-family="'JetBrains Mono'">10.0.0.70 · gpu-node-01</text>
+        <g font-size="11" fill="#8a9ca6" font-family="'JetBrains Mono'">
+          <text x="470" y="30">CPU</text><rect x="510" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="22" width="22" height="8" rx="4" fill="#2bb8e6"/>
+          <text x="650" y="30">MEM</text><rect x="692" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="22" width="58" height="8" rx="4" fill="#2bb8e6"/>
+          <text x="470" y="62">DISK</text><rect x="510" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="54" width="40" height="8" rx="4" fill="#17946a"/>
+          <text x="650" y="62">LOAD</text><rect x="692" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="54" width="14" height="8" rx="4" fill="#17946a"/>
+        </g>
+        <rect x="838" y="24" width="60" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="852" y="39" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">online</text>
+      </g>
+      <!-- row 2 -->
+      <g transform="translate(0,104)">
+        <rect width="918" height="92" rx="12" fill="#121a22" stroke="#20303b"/>
+        <circle cx="26" cy="34" r="6" fill="#c68a1c"/>
+        <text x="46" y="32" font-size="15.5" font-weight="600" fill="#e7eef3">Web Server</text>
+        <text x="46" y="52" font-size="12" fill="#8a9ca6" font-family="'JetBrains Mono'">10.0.0.21 · web-prod-01</text>
+        <g font-size="11" fill="#8a9ca6" font-family="'JetBrains Mono'">
+          <text x="470" y="30">CPU</text><rect x="510" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="22" width="84" height="8" rx="4" fill="#c68a1c"/>
+          <text x="650" y="30">MEM</text><rect x="692" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="22" width="92" height="8" rx="4" fill="#c68a1c"/>
+          <text x="470" y="62">DISK</text><rect x="510" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="54" width="70" height="8" rx="4" fill="#17946a"/>
+          <text x="650" y="62">LOAD</text><rect x="692" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="54" width="48" height="8" rx="4" fill="#c68a1c"/>
+        </g>
+        <rect x="838" y="24" width="60" height="22" rx="11" fill="#1a130f" stroke="#40301d"/><text x="850" y="39" font-size="11" fill="#e0b063" font-family="'JetBrains Mono'">warning</text>
+      </g>
+      <!-- row 3 -->
+      <g transform="translate(0,208)">
+        <rect width="918" height="92" rx="12" fill="#121a22" stroke="#20303b"/>
+        <circle cx="26" cy="34" r="6" fill="#17946a"/>
+        <text x="46" y="32" font-size="15.5" font-weight="600" fill="#e7eef3">GPU Host</text>
+        <text x="46" y="52" font-size="12" fill="#8a9ca6" font-family="'JetBrains Mono'">10.0.0.52 · vLLM host</text>
+        <g font-size="11" fill="#8a9ca6" font-family="'JetBrains Mono'">
+          <text x="470" y="30">CPU</text><rect x="510" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="22" width="96" height="8" rx="4" fill="#2bb8e6"/>
+          <text x="650" y="30">MEM</text><rect x="692" y="22" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="22" width="76" height="8" rx="4" fill="#2bb8e6"/>
+          <text x="470" y="62">DISK</text><rect x="510" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="510" y="54" width="34" height="8" rx="4" fill="#17946a"/>
+          <text x="650" y="62">LOAD</text><rect x="692" y="54" width="120" height="8" rx="4" fill="#1a2730"/><rect x="692" y="54" width="60" height="8" rx="4" fill="#2bb8e6"/>
+        </g>
+        <rect x="838" y="24" width="60" height="22" rx="11" fill="#0f1a16" stroke="#1d4035"/><text x="852" y="39" font-size="11" fill="#5fcf9f" font-family="'JetBrains Mono'">online</text>
+      </g>
+    </g>
+  </g>
+</svg>

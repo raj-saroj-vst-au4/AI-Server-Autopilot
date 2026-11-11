@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="660" viewBox="0 0 1280 660" font-family="'Space Grotesk','Segoe UI',system-ui,sans-serif">
+  <rect width="1280" height="660" fill="#0b1117"/>
+  <text x="40" y="52" font-size="26" font-weight="700" fill="#e7eef3">System Architecture</text>
+  <text x="40" y="80" font-size="15" fill="#8a9ca6">One self-contained app container drives the fleet over SSH and spins pentest engines up on demand.</text>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3a5563"/></marker>
+    <marker id="arrC" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#2bb8e6"/></marker>
+    <style>
+      .box{fill:#121a22;stroke:#20303b;stroke-width:1.5;rx:12}
+      .lbl{fill:#cfdbe3;font-size:15px;font-weight:600}
+      .sub{fill:#8094a0;font-size:12.5px}
+      .pill{font-family:'JetBrains Mono',monospace;font-size:12px}
+      .edge{stroke:#3a5563;stroke-width:1.6;fill:none}
+      .edgeC{stroke:#2bb8e6;stroke-width:1.8;fill:none;stroke-dasharray:5 4}
+      .et{fill:#7f93a0;font-size:12px;font-family:'JetBrains Mono',monospace}
+    </style>
+  </defs>
+
+  <!-- Admin -->
+  <g transform="translate(40,300)">
+    <rect class="box" width="150" height="90" rx="12"/>
+    <text class="lbl" x="22" y="40">Admin</text>
+    <text class="sub" x="22" y="62">browser · :80</text>
+    <text class="sub" x="22" y="78">/autopilot</text>
+  </g>
+  <path class="edgeC" d="M190 345 H250" marker-end="url(#arrC)"/>
+  <text class="et" x="196" y="337">HTTPS</text>
+
+  <!-- Autopilot container -->
+  <g transform="translate(250,210)">
+    <rect width="400" height="280" rx="16" fill="#0f171e" stroke="#2bb8e6" stroke-width="2"/>
+    <text x="24" y="40" font-size="18" font-weight="700" fill="#e7eef3">Autopilot container</text>
+    <text x="24" y="62" class="pill" fill="#79cdea">single image · supervisord</text>
+
+    <g transform="translate(24,82)">
+      <rect width="352" height="40" rx="8" fill="#121a22" stroke="#223441"/>
+      <text x="14" y="25" class="lbl">nginx</text><text x="200" y="25" class="sub">reverse proxy · /autopilot</text>
+    </g>
+    <g transform="translate(24,130)">
+      <rect width="170" height="54" rx="8" fill="#121a22" stroke="#223441"/>
+      <text x="14" y="25" class="lbl">Next.js</text><text x="14" y="44" class="sub">React UI</text>
+    </g>
+    <g transform="translate(206,130)">
+      <rect width="170" height="54" rx="8" fill="#121a22" stroke="#223441"/>
+      <text x="14" y="25" class="lbl">FastAPI</text><text x="14" y="44" class="sub">Python API</text>
+    </g>
+    <g transform="translate(24,192)">
+      <rect width="170" height="52" rx="8" fill="#121a22" stroke="#223441"/>
+      <text x="14" y="24" class="lbl">MariaDB</text><text x="14" y="42" class="sub">fleet · scans · chat</text>
+    </g>
+    <g transform="translate(206,192)">
+      <rect width="170" height="52" rx="8" fill="#121a22" stroke="#223441"/>
+      <text x="14" y="24" class="lbl">docker.sock</text><text x="14" y="42" class="sub">engine control</text>
+    </g>
+  </g>
+
+  <!-- Fleet -->
+  <g transform="translate(730,70)">
+    <rect class="box" width="230" height="120" rx="12"/>
+    <text class="lbl" x="22" y="38">Server fleet</text>
+    <text class="sub" x="22" y="60">metrics · users · quotas</text>
+    <text class="sub" x="22" y="78">restart · reboot · shutdown</text>
+    <g class="pill"><circle cx="30" cy="96" r="5" fill="#17946a"/><text x="44" y="100" fill="#5fcf9f">7 hosts online</text></g>
+  </g>
+  <path class="edge" d="M650 280 C700 230 700 180 730 150" marker-end="url(#arr)"/>
+  <text class="et" x="662" y="212">SSH (paramiko)</text>
+
+  <!-- LLM host -->
+  <g transform="translate(1000,70)">
+    <rect class="box" width="238" height="120" rx="12"/>
+    <text class="lbl" x="22" y="38">GPU host · LLM</text>
+    <text class="sub" x="22" y="60">vLLM · deepseek</text>
+    <text class="sub" x="22" y="78">start/stop + live status</text>
+    <g class="pill"><circle cx="30" cy="96" r="5" fill="#2bb8e6"/><text x="44" y="100" fill="#79cdea">OpenAI-compatible</text></g>
+  </g>
+  <path class="edge" d="M650 250 C860 150 900 150 1000 135" marker-end="url(#arr)"/>
+  <text class="et" x="800" y="178">chat + analysis</text>
+
+  <!-- Engines -->
+  <g transform="translate(730,420)">
+    <rect width="508" height="190" rx="16" fill="#0f171e" stroke="#40301d" stroke-width="1.5"/>
+    <text x="22" y="38" font-size="17" font-weight="700" fill="#e7eef3">Pentest engines</text>
+    <text x="22" y="59" class="pill" fill="#e0b063">global switch · spun up on demand</text>
+
+    <g transform="translate(22,76)">
+      <rect width="226" height="96" rx="10" fill="#121a22" stroke="#223441"/>
+      <text x="16" y="30" class="lbl">HexStrike AI</text>
+      <text x="16" y="52" class="sub">tool-runner (nmap, nuclei,</text>
+      <text x="16" y="68" class="sub">sqlmap…) → parsed findings</text>
+      <g class="pill"><text x="16" y="88" fill="#79cdea">recon · vuln · web · smart</text></g>
+    </g>
+    <g transform="translate(260,76)">
+      <rect width="226" height="96" rx="10" fill="#121a22" stroke="#223441"/>
+      <text x="16" y="30" class="lbl">PentAGI</text>
+      <text x="16" y="52" class="sub">autonomous multi-agent</text>
+      <text x="16" y="68" class="sub">flows · Kali sandboxes</text>
+      <g class="pill"><text x="16" y="88" fill="#e0b063">pgvector · scraper</text></g>
+    </g>
+  </g>
+  <path class="edgeC" d="M560 454 C620 500 680 505 730 510" marker-end="url(#arrC)"/>
+  <text class="et" x="566" y="498">docker compose up/down</text>
+
+  <path class="edge" d="M1216 190 C1250 300 1120 380 1050 418" marker-end="url(#arr)"/>
+  <text class="et" x="1135" y="320">LLM + embeddings</text>
+</svg>
